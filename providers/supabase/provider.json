@@ -2,26 +2,65 @@
   "id": "supabase",
   "name": "Supabase",
   "kind": "platform",
-  "version": "1",
+  "version": "2",
   "checkPrefix": "SUPA",
   "detect": {
-    "files": ["supabase/config.toml"],
-    "globs": ["supabase/migrations/*.sql"],
-    "deps": ["@supabase/supabase-js", "@supabase/ssr", "@supabase/auth-helpers-nextjs", "@supabase/auth-helpers-sveltekit", "@supabase/auth-helpers-react"]
+    "files": [
+      "supabase/config.toml"
+    ],
+    "globs": [
+      "supabase/migrations/*.sql"
+    ],
+    "deps": [
+      "@supabase/supabase-js",
+      "@supabase/ssr",
+      "@supabase/auth-helpers-nextjs",
+      "@supabase/auth-helpers-sveltekit",
+      "@supabase/auth-helpers-react"
+    ]
   },
   "surfaces": {
-    "migrations": { "files": ["supabase/**/*.sql"], "priority": "high" },
-    "config": { "files": ["supabase/config.toml"], "priority": "high" },
-    "edge": { "files": ["supabase/functions/**/*.{ts,js}"], "exclude": ["supabase/functions/**/*.test.ts"], "priority": "high" },
+    "migrations": {
+      "files": [
+        "supabase/**/*.sql"
+      ],
+      "priority": "high"
+    },
+    "config": {
+      "files": [
+        "supabase/config.toml"
+      ],
+      "priority": "high"
+    },
+    "edge": {
+      "files": [
+        "supabase/functions/**/*.{ts,js}"
+      ],
+      "exclude": [
+        "supabase/functions/**/*.test.ts"
+      ],
+      "priority": "high"
+    },
     "client": {
-      "files": ["**/*.{ts,tsx,js,jsx,svelte,vue}"],
-      "exclude": ["supabase/**", "**/*.{test,spec}.*", "**/*.d.ts"],
+      "files": [
+        "**/*.{ts,tsx,js,jsx,svelte,vue}"
+      ],
+      "exclude": [
+        "supabase/**",
+        "**/*.{test,spec}.*",
+        "**/*.d.ts"
+      ],
       "contains": "createClient\\(|createServerClient\\(|createBrowserClient\\(|createClientComponentClient|createServerComponentClient|auth\\.getSession\\(",
       "priority": "high"
     }
   },
   "checks": "checks.md",
   "prescan": "prescan.json",
-  "analyzers": ["analyzers.mjs"],
-  "live": { "mcp": "supabase", "checks": "live.md" }
+  "analyzers": [
+    "analyzers.mjs"
+  ],
+  "live": {
+    "mcp": "supabase",
+    "checks": "live.md"
+  }
 }

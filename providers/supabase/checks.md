@@ -28,6 +28,7 @@ Policies that compare the wrong column, use `auth.uid() is not null` (any logged
 
 ### SUPA-006 · Service role key reachable from the browser · critical
 The key appears in a `'use client'` file, in a `NEXT_PUBLIC_` / `VITE_` / `PUBLIC_` variable, or in a module imported by client code. Anyone can read it from the JS bundle and gets full database access.
+**File as:** `SUPA-006`, at the **client-side file and line that pulls the key in**: the import of the admin module in a `'use client'` component, or the `NEXT_PUBLIC_`/`VITE_`/`PUBLIC_` reference. Do not file it as SUPA-110. If the admin module also hard-codes the key, that is a separate `COMMON-001` at the module.
 Fix: rotate the key in the dashboard, move admin calls to server-only code, and add `import 'server-only'` to the admin client module.
 
 ### SUPA-007 · SECURITY DEFINER without search_path · medium
@@ -73,4 +74,5 @@ Signup, OTP and magic-link endpoints can be scripted. Consider enabling captcha 
 ### SUPA-109 · Weak password policy · low
 
 ### SUPA-110 · Admin client module not server-only · medium
-A shared `lib/supabase-admin.ts` without `import 'server-only'`. A future client import leaks the key. Confirm current importers. If any client file imports it, that is SUPA-006.
+A shared `lib/supabase-admin.ts` without `import 'server-only'`. This is a **latent** risk: a future client import would leak the key. File it at the admin module itself.
+**File as:** `SUPA-110` only when **no client file imports the module today**. Grep for importers first. If any `'use client'` file (or a file it imports) imports the module, that is a live leak: file `SUPA-006` at that client import line **instead**. Never file SUPA-110 on a client component.

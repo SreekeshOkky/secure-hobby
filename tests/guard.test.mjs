@@ -72,6 +72,8 @@ test('agents: only secure-hobby subagents, never pricier models', () => {
 test('network and MCP: blocked unless trusted, live and read-only', () => {
   const off = setup();
   assert.equal(off.ask('WebFetch', { url: 'https://example.com' }), 'deny');
+  assert.equal(off.ask('ScheduleWakeup', { delaySeconds: 1200, prompt: '/secure-hobby:audit .' }), 'deny', 'a wake-up would re-run the audit');
+  assert.equal(off.ask('CronCreate', {}), 'deny');
   assert.equal(off.ask('mcp__supabase__list_tables', {}), 'deny', 'live not requested');
   const { ask } = setup(['--offline', '--live']);
   assert.equal(ask('mcp__supabase__get_advisors', { type: 'security' }), 'allow');

@@ -124,11 +124,6 @@
         "prescan": true
       },
       {
-        "checkId": "SUPA-110",
-        "file": "lib/supabaseAdmin.ts",
-        "prescan": true
-      },
-      {
         "checkId": "SUPA-011",
         "file": "supabase/functions/send-email/index.ts",
         "prescan": true

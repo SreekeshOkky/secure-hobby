@@ -110,6 +110,7 @@ export function mergeFindings(runDir) {
   }
   // Carry verdicts for units whose code has not changed since the prior run.
   let carried = 0;
+  const hardening = queue.hardening.map((c) => ({ fingerprint: c.fingerprint, checkId: c.checkId, title: c.title, severity: c.severity, file: c.file, line: c.line ?? null, note: c.reasoning || c.fixHint || '' }));
   if (run.prior) {
     const prior = readJSON(path.join(run.prior, 'findings.json'), { findings: [], hardening: [] });
     const unchangedFiles = new Set(ledger.units.filter((u) => u.status === 'unchanged').flatMap((u) => u.files));
@@ -119,6 +120,10 @@ export function mergeFindings(runDir) {
       if (f.source === 'live' || !unchangedFiles.has(f.file) || have.has(f.fingerprint) || accepted.has(f.fingerprint)) continue;
       findings.push({ ...f, source: 'carried', carriedFrom: path.basename(run.prior) });
       carried++;
+    }
+    const haveH = new Set(hardening.map((h) => h.fingerprint));
+    for (const h of prior.hardening || []) {
+      if (unchangedFiles.has(h.file) && !haveH.has(h.fingerprint) && !accepted.has(h.fingerprint)) hardening.push(h);
     }
   }
 
@@ -131,7 +136,7 @@ export function mergeFindings(runDir) {
     schemaVersion: 1,
     run: { target: run.source, mode: run.mode, live: run.live, runDir, generated: new Date().toISOString(), prior: run.prior },
     findings,
-    hardening: queue.hardening.map((c) => ({ fingerprint: c.fingerprint, checkId: c.checkId, title: c.title, severity: c.severity, file: c.file, line: c.line ?? null, note: c.reasoning || c.fixHint || '' })),
+    hardening,
     rejected,
     coverage: { units: ledger.units.length, hunted: count('hunted'), unchanged: count('unchanged'), skipped: count('skipped'), carried, accepted: queue.accepted || 0 },
   });
@@ -144,7 +149,7 @@ const base = (c) => ({
   evidence: c.evidence || '', reasoning: c.reasoning || '', exploit: c.exploit || '', source: c.source || 'hunter',
 });
 const pick = (v) => Object.fromEntries(Object.entries({
-  title: v.title, severity: v.severity, file: v.file, line: v.line, evidence: v.evidence, reasoning: v.reasoning,
+  checkId: v.checkId, title: v.title, severity: v.severity, file: v.file, line: v.line, evidence: v.evidence, reasoning: v.reasoning,
   exploit: v.exploit, impact: v.impact, fix: v.fix, needs: v.needs,
 }).filter(([, x]) => x !== undefined && x !== null && x !== ''));
 

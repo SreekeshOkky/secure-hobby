@@ -35,24 +35,28 @@ The Supabase anon key and the Firebase web config are treated as **public by des
 
 ## Proof of concept: measured results
 
-The audit ran headlessly (`claude -p`) against [`evals/fixtures/next-supabase-vuln`](evals/fixtures/next-supabase-vuln): a small Next.js 14 + Supabase + Vercel app (18 files) with **25 planted issues**. They include a hard-coded service_role key imported by a client component, a table without RLS, policies trusting `user_metadata`, an unauthenticated admin API and server action, an open cron route, an LLM endpoint with no auth, SSRF, an open redirect, PostgREST filter injection, a public bucket, a vulnerable Next.js version, and a `pull_request_target` workflow.
+The audit ran headlessly (`claude -p`) against [`evals/fixtures/next-supabase-vuln`](evals/fixtures/next-supabase-vuln): a small Next.js 14 + Supabase + Vercel app (18 files) with **24 planted issues**. They include a hard-coded service_role key imported by a client component, a table without RLS, policies trusting `user_metadata`, an unauthenticated admin API and server action, an open cron route, an LLM endpoint with no auth, SSRF, an open redirect, PostgREST filter injection, a public bucket, a vulnerable Next.js version, and a `pull_request_target` workflow.
 
-| Mode | Session model | Agents used | Recall | Precision | Confirmed | Tokens (in / out) | Cost* |
-|---|---|---|---|---|---|---|---|
-| `--quick` | Opus 5.5 | 4 haiku verifiers | 72% | 100% | 18 (4 critical) | 1.13M / 79k | $0.58 |
-| default | Opus 5.5 | 1 haiku recon, 1 sonnet hunter, 3 sonnet verifiers | 76–88% | 90–96% | 21–23 (6–7 critical) | ~0.93M / 31k | $0.77–0.80 |
-| default | **Sonnet 5.5** | same | 76% | 90% | 21 (6 critical) | 0.91M / 32k | **$0.58** |
+| Mode | Session model | Agents used | Recall | Precision | Confirmed | Tokens (in / out) | Cost* | Model time |
+|---|---|---|---|---|---|---|---|---|
+| `--quick` | Opus 5.5 | 4 haiku verifiers | 71–75% | 94–95% | 18–19 (4 critical) | 1.13M / 79k | $0.58 | 7.0 min |
+| default | Opus 5.5 | 1 haiku recon, 1 sonnet hunter, 3 sonnet verifiers | 79–92% | 90–96% | 21–23 (6–7 critical) | ~0.93M / 31k | $0.77–0.80 | 4.7 min |
+| **default (v0.1.1)** | **Sonnet 5.5** | same | **88%** | **100%** | 21 (5 critical) | 0.84M / 33k | **$0.59** | 3.8 min |
 
 \*API list price as reported by Claude Code. On a Claude subscription, this comes out of your plan's usage instead.
 
 What this shows:
-- **Under $1 per full audit** of a small app. Running the session on sonnet (`claude --model sonnet`) gives the same detection for about 28% less, because the orchestrator only dispatches work.
+- **Under $0.60 per full audit** of a small app on a sonnet session (`claude --model sonnet`). An Opus session costs about 30% more for the same detection, because the orchestrator only dispatches work.
 - **The zero-token prescan does most of the finding.** It produced 36 leads in under a second. Hunters add the cross-file issues regexes miss, such as the service key reaching the browser via an import chain, or the PR-title-injection-to-token-theft chain in CI.
-- **High precision.** Independent verifiers rejected or downgraded weak leads, and confirmed findings were almost always real.
-- **About 90% of input tokens were prompt-cache reads.**
-- **Read-only held.** The guard blocked one chained shell command per run, and nothing touched the fixture. Each run also wrote 15–18 ready-to-review `fixes/*.sql` / `*.patch` files.
+- **High precision.** Independent verifiers rejected or downgraded weak leads. In the latest run, every confirmed finding was a planted issue.
+- **About 87–90% of input tokens were prompt-cache reads.**
+- **Read-only held.** The guard blocked one chained shell command per run, and nothing touched the fixture. Each run also wrote 15–19 ready-to-review `fixes/*.sql` / `*.patch` files.
+- **The evals caught real bugs, which were fixed in v0.1.1:**
+  - a check-ID mislabel (SUPA-006 vs SUPA-110)
+  - the orchestrator scheduling a wake-up that re-ran the whole audit (now blocked by the guard)
+  - hardening notes being dropped on incremental runs
 
-Caveats: this is one small synthetic fixture, not a benchmark of real-world apps. Two default runs on the same input scored 88% and 76%, so expect variance. Per-run details, misses and scoring notes are in [`evals/RESULTS.md`](evals/RESULTS.md). To reproduce:
+Caveats: this is one small synthetic fixture, not a benchmark of real-world apps. Default-mode recall ranged from 79% to 92% across five runs on the same input, so expect variance. Per-run details, misses and scoring notes are in [`evals/RESULTS.md`](evals/RESULTS.md). To reproduce:
 ```bash
 claude --model sonnet -p --plugin-dir . --allowedTools "Bash(node *)" Read Write Agent Grep Glob "/secure-hobby:audit $PWD/evals/fixtures/next-supabase-vuln --offline"
 ```

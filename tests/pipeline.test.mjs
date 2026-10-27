@@ -70,6 +70,7 @@ test('full pipeline produces a valid, redacted report and never touches the targ
   node(home, 'scripts/merge.mjs', ['findings', run2]);
   const f2 = readJSON(path.join(run2, 'findings.json'));
   assert.ok(f2.findings.some((f) => f.source === 'carried' && f.checkId === 'SUPA-001'));
+  assert.equal(f2.hardening.length, findings.hardening.length, 'hardening notes carried forward');
 
   // Accepting a risk removes it from later runs.
   const id = confirmed.find((f) => f.checkId === 'SUPA-001').id;

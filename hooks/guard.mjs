@@ -10,6 +10,7 @@
 //   Agent/Task       only secure-hobby subagents, never a pricier model than the agent's default
 //   mcp__*           only servers/tools in trusted-mcp.json, only with --live, SQL catalog-only
 //   WebFetch/Search  blocked
+//   ScheduleWakeup/CronCreate/RemoteTrigger  blocked (a wake-up would re-run the audit)
 // Fails closed: any guard error while active denies the call.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -21,6 +22,8 @@ const SECRET_FILE = /(^|\/)(\.env(\.(?!(?:example|sample|template|dist|defaults)
 const READ_TOOLS = { Read: 'file_path', Grep: 'path', Glob: 'path', LS: 'path' };
 const WRITE_TOOLS = { Write: 'file_path', Edit: 'file_path', MultiEdit: 'file_path', NotebookEdit: 'notebook_path' };
 const NETWORK_TOOLS = new Set(['WebFetch', 'WebSearch']);
+// Scheduling a wake-up with the audit command re-runs the whole audit (seen in evals).
+const SCHEDULING_TOOLS = new Set(['ScheduleWakeup', 'CronCreate', 'RemoteTrigger']);
 const AGENT_DEFAULT_MODEL = { recon: 'haiku', hunter: 'sonnet', verifier: 'sonnet', 'live-checker': 'haiku' };
 const MODEL_COST = { haiku: 1, sonnet: 2, opus: 3 };
 
@@ -103,6 +106,7 @@ export function decide(tool, ti, ctx) {
     return allow('secure-hobby subagent');
   }
   if (NETWORK_TOOLS.has(tool)) return deny('network tools are blocked during an audit; the code is the source of truth');
+  if (SCHEDULING_TOOLS.has(tool)) return deny('scheduling is blocked during an audit; wait for the agents to report instead (subagent results return automatically)');
   if (tool.startsWith('mcp__')) {
     const trusted = readJSON(path.join(PLUGIN_ROOT, 'trusted-mcp.json'));
     if ((trusted.passthroughPrefixes || []).some((p) => tool.startsWith(p))) return {};
