@@ -1,0 +1,16 @@
+project_id = "next-supabase-clean"
+
+[api]
+schemas = ["public", "graphql_public"]
+
+[auth]
+site_url = "https://myapp.vercel.app"
+additional_redirect_urls = ["https://myapp.vercel.app/auth/callback"]
+minimum_password_length = 10
+
+[auth.captcha]
+enabled = true
+provider = "turnstile"
+
+[auth.email]
+enable_confirmations = true

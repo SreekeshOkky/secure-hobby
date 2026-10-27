@@ -1,0 +1,268 @@
+{
+  "$comment": "Planted issues per fixture. prescan=true means the zero-token prescan must raise a lead for it (checked by tests/prescan.test.mjs). Full-run recall/precision is scored by scripts/eval.mjs against confirmed findings. Clean fixtures must produce no confirmed findings.",
+  "next-supabase-vuln": {
+    "packs": [
+      "common",
+      "nextjs",
+      "supabase",
+      "vercel"
+    ],
+    "findings": [
+      {
+        "checkId": "COMMON-001",
+        "file": "lib/supabaseAdmin.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-006",
+        "file": "components/AdminPanel.tsx",
+        "prescan": false
+      },
+      {
+        "checkId": "VERCEL-001",
+        "file": "app/api/cron/cleanup/route.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "NEXT-002",
+        "file": "app/api/admin/users/route.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "NEXT-003",
+        "file": "app/actions.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "NEXT-004",
+        "file": "package.json",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-014",
+        "file": "lib/search.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-020",
+        "file": "app/api/chat/route.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-011",
+        "file": "app/api/proxy/route.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-012",
+        "file": "app/auth/callback/route.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-010",
+        "file": "components/AdminPanel.tsx",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-101",
+        "file": "middleware.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-001",
+        "file": "supabase/migrations/20240101000000_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-003",
+        "file": "supabase/migrations/20240101000000_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-005",
+        "file": "supabase/migrations/20240101000000_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-007",
+        "file": "supabase/migrations/20240101000000_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-008",
+        "file": "supabase/migrations/20240101000000_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-009",
+        "file": "supabase/migrations/20240101000000_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-103",
+        "file": "supabase/config.toml",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-010",
+        "file": "supabase/config.toml",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-040",
+        "file": ".github/workflows/preview.yml",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-041",
+        "file": ".github/workflows/preview.yml",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-105",
+        "file": "supabase/migrations/20240101000000_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-110",
+        "file": "lib/supabaseAdmin.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-011",
+        "file": "supabase/functions/send-email/index.ts",
+        "prescan": true
+      }
+    ]
+  },
+  "next-supabase-clean": {
+    "packs": [
+      "common",
+      "nextjs",
+      "supabase",
+      "vercel"
+    ],
+    "findings": []
+  },
+  "vite-supabase-vuln": {
+    "packs": [
+      "common",
+      "supabase",
+      "vite-spa"
+    ],
+    "findings": [
+      {
+        "checkId": "VITE-002",
+        "file": "src/lib/supabase.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "VITE-001",
+        "file": "src/lib/supabase.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "VITE-003",
+        "file": "src/pages/Admin.tsx",
+        "prescan": false
+      },
+      {
+        "checkId": "COMMON-001",
+        "file": "vite.config.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "VITE-004",
+        "file": "vite.config.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-014",
+        "file": "src/pages/Search.tsx",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-010",
+        "file": "src/components/Comment.tsx",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-001",
+        "file": "supabase/migrations/0001_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-003",
+        "file": "supabase/migrations/0001_init.sql",
+        "prescan": true
+      }
+    ]
+  },
+  "vite-supabase-clean": {
+    "packs": [
+      "common",
+      "supabase",
+      "vite-spa"
+    ],
+    "findings": []
+  },
+  "sveltekit-supabase-vuln": {
+    "packs": [
+      "common",
+      "supabase",
+      "sveltekit",
+      "vercel"
+    ],
+    "findings": [
+      {
+        "checkId": "SVELTE-001",
+        "file": "src/lib/server/admin.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SVELTE-002",
+        "file": "src/routes/api/export/+server.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SVELTE-003",
+        "file": "src/routes/admin/+page.server.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SVELTE-004",
+        "file": "src/hooks.server.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SVELTE-006",
+        "file": "svelte.config.js",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-101",
+        "file": "src/hooks.server.ts",
+        "prescan": true
+      },
+      {
+        "checkId": "SUPA-002",
+        "file": "supabase/migrations/0001_init.sql",
+        "prescan": true
+      },
+      {
+        "checkId": "COMMON-010",
+        "file": "src/routes/posts/[id]/+page.svelte",
+        "prescan": true
+      }
+    ]
+  },
+  "sveltekit-supabase-clean": {
+    "packs": [
+      "common",
+      "supabase",
+      "sveltekit",
+      "vercel"
+    ],
+    "findings": []
+  }
+}

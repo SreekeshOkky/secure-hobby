@@ -1,0 +1,71 @@
+{
+  "rules": [
+    { "id": "COMMON-001", "type": "secrets" },
+    { "id": "COMMON-002", "type": "git-history" },
+    { "id": "COMMON-003", "type": "env-files" },
+    {
+      "id": "COMMON-010", "title": "Raw HTML rendering", "severity": "medium",
+      "files": ["**/*.{tsx,jsx,js,ts,svelte,vue}"],
+      "pattern": "dangerouslySetInnerHTML|\\{@html\\s|v-html=|\\.innerHTML\\s*=|insertAdjacentHTML\\(",
+      "note": "Confirm the HTML can carry user content and is not sanitized (for example with DOMPurify)."
+    },
+    {
+      "id": "COMMON-011", "title": "Server-side fetch of a request-controlled URL (SSRF)", "severity": "medium",
+      "files": ["**/*.{ts,js,mjs}"],
+      "contains": "searchParams\\.get\\(\\s*['\"](?:url|target|dest|link|src|uri|image|endpoint)['\"]\\)|(?:query|body|params)\\.(?:url|target|uri|endpoint)\\b",
+      "pattern": "\\bfetch\\(|axios\\.(?:get|post)\\(|got\\(",
+      "absent": "allowedHosts|ALLOWED_HOSTS|allowlist|isAllowedUrl"
+    },
+    {
+      "id": "COMMON-012", "title": "Redirect to a request-controlled URL (open redirect)", "severity": "medium",
+      "files": ["**/*.{ts,tsx,js,jsx,svelte}"],
+      "contains": "searchParams\\.get\\(\\s*['\"](?:next|redirect|redirectTo|redirect_to|returnTo|return_to|callbackUrl|url)['\"]\\)",
+      "pattern": "\\bredirect\\(|NextResponse\\.redirect\\(|Response\\.redirect\\(|location\\.href\\s*=|window\\.location\\s*=",
+      "absent": "startsWith\\(\\s*['\"]/['\"]|new URL\\([^)]*\\)\\.origin|isSafeRedirect|safeRedirect|allowedRedirect"
+    },
+    {
+      "id": "COMMON-013", "title": "Wildcard CORS", "severity": "low",
+      "files": ["**/*.{ts,js,mjs,json}"],
+      "pattern": "Access-Control-Allow-Origin['\"]?\\s*[:,]\\s*['\"]\\*['\"]|origin:\\s*['\"]\\*['\"]"
+    },
+    {
+      "id": "COMMON-014", "title": "Query built from string interpolation (injection)", "severity": "high",
+      "files": ["**/*.{ts,tsx,js,jsx,svelte}"],
+      "pattern": "\\.or\\(\\s*`[^`]*\\$\\{|\\.filter\\(\\s*`[^`]*\\$\\{|sql\\.unsafe\\(|\\$queryRawUnsafe\\(|\\$executeRawUnsafe\\(|\\.query\\(\\s*`[^`]*\\$\\{|\\.raw\\(\\s*`[^`]*\\$\\{"
+    },
+    {
+      "id": "COMMON-015", "title": "Dynamic code or shell execution", "severity": "medium",
+      "files": ["**/*.{ts,js,mjs,cjs}"],
+      "exclude": ["**/*.config.*", "scripts/**"],
+      "pattern": "\\beval\\(|new Function\\(|require\\(['\"](?:node:)?child_process['\"]\\)|from ['\"](?:node:)?child_process['\"]"
+    },
+    {
+      "id": "COMMON-020", "title": "LLM endpoint without auth or rate limit (denial of wallet)", "severity": "medium", "scope": "file",
+      "files": ["{app,src/app,src/routes,pages/api,src/pages/api,api,supabase/functions}/**/*.{ts,js}"],
+      "contains": "openai|@anthropic-ai/sdk|@ai-sdk|generateText|streamText|chat\\.completions|messages\\.create|GoogleGenerativeAI|groq-sdk",
+      "pattern": "export\\s+(?:async\\s+)?function\\s+(?:POST|GET|handler)\\b|export\\s+const\\s+(?:POST|GET)\\b|export\\s+default\\s+(?:async\\s+)?function|Deno\\.serve\\(|serve\\(",
+      "absent": "getUser\\(|getClaims\\(|auth\\(\\)|getServerSession|currentUser\\(|locals\\.(?:user|session|safeGetSession)|ratelimit|rateLimit|Ratelimit|verifyToken|jwtVerify"
+    },
+    {
+      "id": "COMMON-021", "title": "AI provider key exposed to the browser", "severity": "high",
+      "files": ["**/*.{ts,tsx,js,jsx,svelte,vue}", "**/.env*"],
+      "pattern": "(?:NEXT_PUBLIC_|VITE_|(?<![A-Z_])PUBLIC_)[A-Z0-9_]*(?:OPENAI|ANTHROPIC|CLAUDE|GEMINI|GROQ|MISTRAL|REPLICATE|COHERE|PERPLEXITY)[A-Z0-9_]*|dangerouslyAllowBrowser\\s*:\\s*true"
+    },
+    {
+      "id": "COMMON-040", "title": "Workflow runs on pull_request_target", "severity": "medium",
+      "files": [".github/workflows/*.{yml,yaml}"],
+      "pattern": "pull_request_target",
+      "note": "Dangerous when the job checks out the PR head or uses secrets with untrusted code."
+    },
+    {
+      "id": "COMMON-041", "title": "Untrusted GitHub event data interpolated into a workflow (script injection)", "severity": "medium",
+      "files": [".github/workflows/*.{yml,yaml}"],
+      "pattern": "\\$\\{\\{\\s*github\\.(?:event\\.(?:issue|pull_request|comment|review|review_comment|head_commit|discussion)[\\w.]*\\.(?:title|body|message|name|label|ref|email)|head_ref)\\s*\\}\\}"
+    },
+    {
+      "id": "COMMON-042", "title": "Third-party action not pinned to a commit SHA", "severity": "low",
+      "files": [".github/workflows/*.{yml,yaml}"],
+      "pattern": "uses:\\s*(?!actions/|github/|\\./|docker://)[\\w.-]+/[\\w./-]+@(?![0-9a-f]{40}\\b)[\\w.-]+"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "secure-hobby/findings.schema.json",
+  "title": "secure-hobby findings.json",
+  "description": "Enforced by scripts/validate-findings.mjs (zero-dependency implementation of these rules).",
+  "type": "object",
+  "required": ["schemaVersion", "run", "findings", "hardening", "rejected", "coverage"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "run": { "type": "object" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "fingerprint", "verdict", "checkId", "title", "file"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^F-\\d{3,}$" },
+          "fingerprint": { "type": "string", "minLength": 8 },
+          "verdict": { "enum": ["confirmed", "needs_validation"] },
+          "checkId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-\\d{3}$" },
+          "title": { "type": "string", "minLength": 4 },
+          "severity": { "enum": ["critical", "high", "medium", "low", "info", null] },
+          "file": { "type": ["string", "null"] },
+          "line": { "type": ["integer", "null"] },
+          "evidence": { "type": "string" },
+          "reasoning": { "type": "string" },
+          "exploit": { "type": "string" },
+          "impact": { "type": "string" },
+          "needs": { "type": "string" },
+          "source": { "enum": ["hunter", "prescan", "live", "carried"] },
+          "fix": {
+            "type": "object",
+            "required": ["summary"],
+            "properties": { "summary": { "type": "string" }, "sql": { "type": "string" }, "patch": { "type": "string" } }
+          }
+        },
+        "allOf": [
+          {
+            "if": { "properties": { "verdict": { "const": "confirmed" } } },
+            "then": { "required": ["severity", "evidence", "fix"], "properties": { "severity": { "enum": ["critical", "high", "medium", "low", "info"] } } }
+          },
+          {
+            "if": { "properties": { "verdict": { "const": "needs_validation" } } },
+            "then": { "required": ["needs"], "properties": { "severity": { "const": null } } }
+          }
+        ]
+      }
+    },
+    "hardening": { "type": "array", "items": { "type": "object", "required": ["checkId", "title"] } },
+    "rejected": { "type": "array", "items": { "type": "object", "required": ["fingerprint", "checkId"] } },
+    "coverage": {
+      "type": "object",
+      "required": ["units", "hunted", "unchanged", "skipped"],
+      "properties": {
+        "units": { "type": "integer" }, "hunted": { "type": "integer" }, "unchanged": { "type": "integer" },
+        "skipped": { "type": "integer" }, "carried": { "type": "integer" }, "accepted": { "type": "integer" }
+      }
+    }
+  }
+}

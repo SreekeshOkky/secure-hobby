@@ -1,0 +1,18 @@
+{
+  "id": "sveltekit",
+  "name": "SvelteKit",
+  "kind": "framework",
+  "version": "1",
+  "checkPrefix": "SVELTE",
+  "detect": { "files": ["svelte.config.{js,ts}"], "deps": ["@sveltejs/kit"] },
+  "surfaces": {
+    "endpoints": { "files": ["src/routes/**/+server.{ts,js}"], "priority": "high" },
+    "server-load": { "files": ["src/routes/**/+{page,layout}.server.{ts,js}"], "priority": "high" },
+    "hooks": { "files": ["src/hooks.server.{ts,js}", "src/hooks.{ts,js}"], "priority": "high" },
+    "config": { "files": ["svelte.config.{js,ts}"], "priority": "high" },
+    "server-lib": { "files": ["src/lib/server/**/*.{ts,js}"], "priority": "low" },
+    "pages": { "files": ["src/routes/**/*.svelte", "src/lib/**/*.svelte"], "priority": "low" }
+  },
+  "checks": "checks.md",
+  "prescan": "prescan.json"
+}

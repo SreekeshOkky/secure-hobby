@@ -1,0 +1,12 @@
+{
+  "rules": [
+    {
+      "id": "__PREFIX__-001",
+      "title": "Describe the risky pattern",
+      "severity": "medium",
+      "files": ["__ID__.json"],
+      "pattern": "regex that marks the risky line",
+      "note": "What the verifier should confirm"
+    }
+  ]
+}

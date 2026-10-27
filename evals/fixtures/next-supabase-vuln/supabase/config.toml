@@ -1,0 +1,15 @@
+project_id = "next-supabase-vuln"
+
+[api]
+schemas = ["public", "graphql_public"]
+
+[auth]
+site_url = "https://myapp.vercel.app"
+additional_redirect_urls = ["https://*.vercel.app/**"]
+minimum_password_length = 6
+
+[auth.email]
+enable_confirmations = false
+
+[functions.send-email]
+verify_jwt = false

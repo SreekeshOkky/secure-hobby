@@ -1,0 +1,13 @@
+name: preview-comment
+on: pull_request_target
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - run: echo "Building ${{ github.event.pull_request.title }}"
+      - uses: some-org/deploy-action@v2
+        with:
+          token: ${{ secrets.VERCEL_TOKEN }}

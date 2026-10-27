@@ -1,0 +1,24 @@
+{
+  "id": "vite-spa",
+  "name": "Vite single-page app (React / Vue / Svelte without a server)",
+  "kind": "framework",
+  "version": "1",
+  "checkPrefix": "VITE",
+  "detect": { "files": ["vite.config.{ts,js,mjs}"], "deps": ["vite"], "unlessDeps": ["@sveltejs/kit", "next", "nuxt", "astro", "@remix-run/dev", "@tanstack/start", "@react-router/dev"] },
+  "surfaces": {
+    "config": { "files": ["vite.config.{ts,js,mjs}"], "priority": "high" },
+    "guards": {
+      "files": ["src/**/*.{ts,tsx,js,jsx,vue,svelte}"],
+      "contains": "createBrowserRouter|<Route\\b|beforeEach\\(|ProtectedRoute|RequireAuth|requireAuth|isAdmin|role\\s*===",
+      "priority": "high"
+    },
+    "data": {
+      "files": ["src/**/*.{ts,tsx,js,jsx,vue,svelte}"],
+      "contains": "\\.from\\(['\"]|\\.rpc\\(|\\.storage\\.from\\(",
+      "priority": "high"
+    },
+    "src": { "files": ["src/**/*.{ts,tsx,js,jsx,vue,svelte}"], "exclude": ["**/*.{test,spec}.*", "**/*.d.ts"], "priority": "low" }
+  },
+  "checks": "checks.md",
+  "prescan": "prescan.json"
+}

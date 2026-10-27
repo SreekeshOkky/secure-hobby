@@ -1,0 +1,45 @@
+{
+  "rules": [
+    {
+      "id": "NEXT-001", "title": "Secret behind NEXT_PUBLIC_ (shipped in the browser bundle)", "severity": "high",
+      "files": ["**/*.{ts,tsx,js,jsx,mjs}", "**/.env*"],
+      "pattern": "NEXT_PUBLIC_[A-Z0-9_]*(?:SECRET|SERVICE|PRIVATE|PASSWORD|ADMIN)[A-Z0-9_]*"
+    },
+    {
+      "id": "NEXT-002", "title": "Route handler with no visible auth check", "severity": "medium", "scope": "file",
+      "surface": "routes",
+      "exclude": ["**/api/cron/**", "**/auth/**", "**/webhook*/**", "**/health*/**"],
+      "pattern": "export\\s+(?:async\\s+)?function\\s+(?:POST|PUT|PATCH|DELETE|GET)\\b|export\\s+const\\s+(?:POST|PUT|PATCH|DELETE|GET)\\b|export\\s+default\\s+(?:async\\s+)?function",
+      "absent": "getUser\\(|getClaims\\(|\\bauth\\(\\)|getServerSession|currentUser\\(|verifyToken|verifySignature|jwtVerify|CRON_SECRET|requireAuth|withAuth|getToken\\(|constructEvent\\("
+    },
+    {
+      "id": "NEXT-003", "title": "Server action with no visible auth check", "severity": "medium", "scope": "file",
+      "surface": "actions",
+      "pattern": "export\\s+(?:async\\s+)?function\\s+\\w+|export\\s+const\\s+\\w+\\s*=\\s*async",
+      "absent": "getUser\\(|getClaims\\(|\\bauth\\(\\)|getServerSession|currentUser\\(|requireAuth|withAuth"
+    },
+    {
+      "id": "NEXT-004", "type": "dep-version", "package": "next",
+      "title": "Next.js version vulnerable to middleware authorization bypass (CVE-2025-29927)", "severity": "high",
+      "requiresFile": "{middleware,src/middleware}.{ts,js}",
+      "ranges": [["11.1.4", "12.3.5"], ["13.0.0", "14.2.25"], ["15.0.0", "15.2.3"]],
+      "note": "A crafted x-middleware-subrequest header skips middleware. Matters if middleware does auth."
+    },
+    {
+      "id": "NEXT-010", "type": "dep-version", "package": "next",
+      "title": "Next.js version affected by the React Server Components RCE (CVE-2025-55182)", "severity": "critical",
+      "ranges": [["15.0.0", "15.0.5"], ["15.1.0", "15.1.9"], ["15.2.0", "15.2.6"], ["15.3.0", "15.3.6"], ["15.4.0", "15.4.8"], ["15.5.0", "15.5.7"], ["16.0.0", "16.0.7"]],
+      "note": "App Router apps on these versions should upgrade now. Check the Next.js advisory for the latest patched release."
+    },
+    {
+      "id": "NEXT-005", "title": "Production browser source maps enabled", "severity": "low",
+      "files": ["next.config.{js,mjs,ts}"],
+      "pattern": "productionBrowserSourceMaps\\s*:\\s*true"
+    },
+    {
+      "id": "NEXT-008", "title": "Image optimizer accepts any remote host", "severity": "low",
+      "files": ["next.config.{js,mjs,ts}"],
+      "pattern": "hostname\\s*:\\s*['\"]\\*\\*?['\"]|domains\\s*:\\s*\\[\\s*['\"]\\*"
+    }
+  ]
+}

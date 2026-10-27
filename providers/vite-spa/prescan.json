@@ -1,0 +1,26 @@
+{
+  "rules": [
+    {
+      "id": "VITE-001", "title": "Secret behind VITE_ (shipped in the browser bundle)", "severity": "high",
+      "files": ["**/*.{ts,tsx,js,jsx,vue,svelte}", "**/.env*"],
+      "pattern": "VITE_[A-Z0-9_]*(?:SECRET|SERVICE|PRIVATE|PASSWORD|ADMIN)[A-Z0-9_]*"
+    },
+    {
+      "id": "VITE-002", "title": "Privileged Supabase key in SPA source", "severity": "critical",
+      "files": ["src/**/*.{ts,tsx,js,jsx,vue,svelte}"],
+      "exclude": ["**/*.{test,spec}.*"],
+      "pattern": "SERVICE_ROLE|service_role|sb_secret_|auth\\.admin\\."
+    },
+    {
+      "id": "VITE-004", "title": "Value injected into the bundle with define", "severity": "medium",
+      "files": ["vite.config.{ts,js,mjs}"],
+      "contains": "define\\s*:",
+      "pattern": "['\"][\\w.]*(?:SECRET|TOKEN|PRIVATE|PASSWORD|SERVICE)[\\w.]*['\"]\\s*:"
+    },
+    {
+      "id": "VITE-005", "title": "Production source maps enabled", "severity": "low",
+      "files": ["vite.config.{ts,js,mjs}"],
+      "pattern": "sourcemap\\s*:\\s*(?:true|['\"]inline['\"])"
+    }
+  ]
+}

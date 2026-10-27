@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "secure-hobby/ledger.schema.json",
+  "title": "secure-hobby coverage-ledger.json",
+  "type": "object",
+  "required": ["units", "batches", "estimate", "gate"],
+  "properties": {
+    "mode": { "enum": ["quick", "default", "deep"] },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "provider", "surface", "priority", "files", "hash", "status"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+:[a-z0-9-]+:\\d+$" },
+          "priority": { "enum": ["high", "low"] },
+          "files": { "type": "array", "items": { "type": "string" } },
+          "hash": { "type": "string" },
+          "leads": { "type": "array", "items": { "type": "string" } },
+          "status": { "type": "string", "pattern": "^(hunted|unchanged|skipped:[a-z-]+)$" }
+        }
+      }
+    },
+    "batches": {
+      "type": "array", "maxItems": 12,
+      "items": { "type": "object", "required": ["id", "units", "providers"], "properties": { "id": { "pattern": "^h\\d+$" } } }
+    },
+    "estimate": { "type": "object", "required": ["hunters", "huntTokens"] },
+    "gate": { "type": "object", "required": ["confirm"] }
+  }
+}

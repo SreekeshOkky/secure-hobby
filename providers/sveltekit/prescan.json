@@ -1,0 +1,33 @@
+{
+  "rules": [
+    {
+      "id": "SVELTE-001", "title": "Secret behind PUBLIC_ / $env/*/public (shipped to the browser)", "severity": "high",
+      "files": ["src/**/*.{ts,js,svelte}", "**/.env*"],
+      "pattern": "(?<![A-Z_])PUBLIC_[A-Z0-9_]*(?:SECRET|SERVICE|PRIVATE|PASSWORD|ADMIN)[A-Z0-9_]*"
+    },
+    {
+      "id": "SVELTE-002", "title": "Endpoint with no visible auth check", "severity": "medium", "scope": "file",
+      "surface": "endpoints",
+      "exclude": ["**/auth/**", "**/webhook*/**", "**/health*/**"],
+      "pattern": "export\\s+(?:async\\s+)?function\\s+(?:GET|POST|PUT|PATCH|DELETE)\\b|export\\s+const\\s+(?:GET|POST|PUT|PATCH|DELETE)\\b",
+      "absent": "locals\\.(?:user|session|safeGetSession|getSession|auth)|getUser\\(|getClaims\\(|authorization|CRON_SECRET|error\\(\\s*40[13]"
+    },
+    {
+      "id": "SVELTE-003", "title": "Form actions with no visible auth check", "severity": "medium", "scope": "file",
+      "surface": "server-load",
+      "contains": "export\\s+const\\s+actions",
+      "pattern": "export\\s+const\\s+actions",
+      "absent": "locals\\.(?:user|session|safeGetSession|getSession|auth)|getUser\\(|getClaims\\(|error\\(\\s*40[13]|redirect\\(\\s*30[37]\\s*,\\s*['\"]/(?:login|auth)"
+    },
+    {
+      "id": "SVELTE-004", "title": "Exact-match path guard in hooks (sub-paths unprotected)", "severity": "medium",
+      "surface": "hooks",
+      "pattern": "pathname\\s*===\\s*['\"]/[\\w-]+['\"]"
+    },
+    {
+      "id": "SVELTE-006", "title": "CSRF origin check disabled", "severity": "medium",
+      "files": ["svelte.config.{js,ts}"],
+      "pattern": "checkOrigin\\s*:\\s*false"
+    }
+  ]
+}

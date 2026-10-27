@@ -1,0 +1,110 @@
+{
+  "rules": [
+    {
+      "id": "SUPA-006",
+      "title": "Supabase service role / secret key referenced in a client component",
+      "severity": "critical",
+      "files": [
+        "**/*.{ts,tsx,js,jsx}"
+      ],
+      "contains": "^\\s*['\"]use client['\"]",
+      "pattern": "SERVICE_ROLE|service_role|SUPABASE_SECRET_KEY|sb_secret_"
+    },
+    {
+      "id": "SUPA-110",
+      "title": "Admin (service role) client created in a module not marked server-only",
+      "severity": "medium",
+      "scope": "file",
+      "files": [
+        "**/*.{ts,tsx,js,jsx}"
+      ],
+      "exclude": [
+        "supabase/functions/**",
+        "scripts/**",
+        "**/*.{test,spec}.*",
+        "src/lib/server/**",
+        "**/*.server.{ts,js}"
+      ],
+      "pattern": "createClient\\([^)]*(?:SERVICE_ROLE|service_role|SECRET_KEY)",
+      "absent": "import\\s+['\"]server-only['\"]",
+      "note": "Confirm no client component imports this module, directly or transitively."
+    },
+    {
+      "id": "SUPA-101",
+      "title": "Server code trusts auth.getSession() (unverified cookie)",
+      "severity": "medium",
+      "scope": "file",
+      "files": [
+        "{app,src/app}/**/*.{ts,tsx,js}",
+        "{pages,src/pages}/api/**/*.{ts,js}",
+        "{middleware,src/middleware}.{ts,js}",
+        "src/hooks.server.{ts,js}",
+        "src/routes/**/+*.server.{ts,js}",
+        "src/routes/**/+server.{ts,js}",
+        "{lib,src/lib,utils,src/utils}/**/*.{ts,js}"
+      ],
+      "pattern": "auth\\.getSession\\(\\)",
+      "absent": "auth\\.getUser\\(|auth\\.getClaims\\(|safeGetSession"
+    },
+    {
+      "id": "SUPA-010",
+      "title": "Edge function deployed without JWT verification",
+      "severity": "medium",
+      "files": [
+        "supabase/config.toml"
+      ],
+      "pattern": "verify_jwt\\s*=\\s*false",
+      "note": "Fine for webhooks that verify their own signature. Otherwise anyone can call it."
+    },
+    {
+      "id": "SUPA-011",
+      "title": "Edge function uses the service role and allows any origin",
+      "severity": "medium",
+      "scope": "file",
+      "files": [
+        "supabase/functions/**/*.{ts,js}"
+      ],
+      "contains": "SERVICE_ROLE|service_role|SUPABASE_SECRET_KEY",
+      "pattern": "Access-Control-Allow-Origin['\"]?\\s*:\\s*['\"]\\*"
+    },
+    {
+      "id": "SUPA-103",
+      "title": "Wildcard auth redirect URL",
+      "severity": "medium",
+      "files": [
+        "supabase/config.toml"
+      ],
+      "pattern": "^\\s*(?:site_url|additional_redirect_urls)\\s*=.*\\*"
+    },
+    {
+      "id": "SUPA-104",
+      "title": "Email confirmation disabled",
+      "severity": "low",
+      "files": [
+        "supabase/config.toml"
+      ],
+      "pattern": "enable_confirmations\\s*=\\s*false"
+    },
+    {
+      "id": "SUPA-108",
+      "title": "No captcha on auth endpoints",
+      "severity": "low",
+      "scope": "file",
+      "files": [
+        "supabase/config.toml"
+      ],
+      "pattern": "^\\[auth\\]",
+      "absent": "\\[auth\\.captcha\\]\\s*\\n\\s*enabled\\s*=\\s*true",
+      "note": "Signup, magic link and OTP endpoints can be scripted to send email or SMS on your quota."
+    },
+    {
+      "id": "SUPA-109",
+      "title": "Weak minimum password length",
+      "severity": "low",
+      "files": [
+        "supabase/config.toml"
+      ],
+      "pattern": "minimum_password_length\\s*=\\s*[0-7]\\b"
+    }
+  ]
+}

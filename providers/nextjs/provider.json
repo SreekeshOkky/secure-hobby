@@ -1,0 +1,19 @@
+{
+  "id": "nextjs",
+  "name": "Next.js",
+  "kind": "framework",
+  "version": "1",
+  "checkPrefix": "NEXT",
+  "detect": { "files": ["next.config.{js,mjs,ts}"], "deps": ["next"] },
+  "surfaces": {
+    "routes": { "files": ["{app,src/app}/**/route.{ts,js}", "{pages,src/pages}/api/**/*.{ts,js}"], "priority": "high" },
+    "actions": { "files": ["{app,src/app,lib,src/lib,actions,src/actions}/**/*.{ts,tsx,js,jsx}"], "contains": "^\\s*['\"]use server['\"]", "priority": "high" },
+    "middleware": { "files": ["{middleware,src/middleware}.{ts,js}"], "priority": "high" },
+    "config": { "files": ["next.config.{js,mjs,ts}"], "priority": "high" },
+    "server-lib": { "files": ["{lib,src/lib,utils,src/utils,server,src/server}/**/*.{ts,js}"], "exclude": ["**/*.{test,spec}.*"], "priority": "low" },
+    "pages": { "files": ["{app,src/app}/**/{page,layout}.{tsx,jsx,ts,js}", "{pages,src/pages}/**/*.{tsx,jsx}"], "exclude": ["{pages,src/pages}/api/**"], "priority": "low" },
+    "client": { "files": ["**/*.{tsx,jsx,ts,js}"], "exclude": ["**/*.{test,spec}.*", "supabase/**"], "contains": "^\\s*['\"]use client['\"]", "priority": "low" }
+  },
+  "checks": "checks.md",
+  "prescan": "prescan.json"
+}

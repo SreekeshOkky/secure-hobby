@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "id": "VERCEL-001", "title": "Cron route without CRON_SECRET check", "severity": "high", "scope": "file",
+      "surface": "cron",
+      "absent": "CRON_SECRET|verifySignature|x-vercel-signature"
+    },
+    {
+      "id": "VERCEL-008", "title": "Vercel storage token exposed to the browser", "severity": "high",
+      "files": ["**/*.{ts,tsx,js,jsx,svelte}", "**/.env*"],
+      "pattern": "(?:NEXT_PUBLIC_|VITE_|(?<![A-Z_])PUBLIC_)[A-Z0-9_]*(?:BLOB_READ_WRITE|KV_REST_API_TOKEN|EDGE_CONFIG_TOKEN|POSTGRES_PASSWORD|POSTGRES_URL)"
+    },
+    {
+      "id": "VERCEL-004", "title": "Hard-coded production backend URL (previews may share prod data)", "severity": "low",
+      "files": ["**/*.{ts,tsx,js,jsx,svelte}"],
+      "exclude": ["**/*.{test,spec}.*"],
+      "pattern": "createClient\\(\\s*['\"]https://[a-z0-9]{20}\\.supabase\\.co['\"]"
+    },
+    {
+      "id": "VERCEL-007", "title": "Long function duration on a public route (denial of wallet)", "severity": "low",
+      "files": ["vercel.json", "{app,src/app}/**/route.{ts,js}"],
+      "pattern": "maxDuration['\"]?\\s*[:=]\\s*(?:[3-9]\\d{2}|[1-9]\\d{3})"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "$comment": "MCP servers the audit may use, all read-only. The guard blocks every other MCP server during an audit, and blocks any tool matching alwaysDeny even if listed. Neither server is installed automatically: run /secure-hobby:connect for the commands. Name the servers exactly 'supabase' and 'vercel' (or add your name to 'names').",
+  "passthroughPrefixes": ["mcp__ccd_turn__"],
+  "alwaysDeny": "^(apply_|deploy|create_|delete_|update_|merge_|reset_|rebase_|pause_|restore_|buy_|confirm_|execute_(?!sql$)|get_logs|get_deployment_build_logs|web_fetch|get_access_to_vercel_url|generate_typescript_types)",
+  "servers": {
+    "supabase": {
+      "names": ["supabase"],
+      "publisher": "Supabase (official)",
+      "source": "https://github.com/supabase-community/supabase-mcp",
+      "preferred": {
+        "transport": "http",
+        "url": "https://mcp.supabase.com/mcp?read_only=true&project_ref=<project-ref>"
+      },
+      "local": {
+        "package": "@supabase/mcp-server-supabase",
+        "version": "0.13.0",
+        "args": ["--read-only", "--project-ref=<project-ref>"]
+      },
+      "allow": [
+        "list_tables",
+        "list_extensions",
+        "list_migrations",
+        "get_advisors",
+        "list_edge_functions",
+        "get_edge_function",
+        "list_storage_buckets",
+        "get_storage_config",
+        "get_project_url",
+        "search_docs",
+        "execute_sql"
+      ],
+      "sqlGuard": { "tool": "execute_sql", "arg": "query" }
+    },
+    "vercel": {
+      "names": ["vercel"],
+      "publisher": "Vercel (official)",
+      "source": "https://vercel.com/docs/mcp/vercel-mcp",
+      "preferred": { "transport": "http", "url": "https://mcp.vercel.com" },
+      "allow": [
+        "list_teams",
+        "list_projects",
+        "get_project",
+        "list_deployments",
+        "get_deployment",
+        "search_vercel_documentation"
+      ]
+    }
+  }
+}

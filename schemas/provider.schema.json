@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "secure-hobby/provider.schema.json",
+  "title": "secure-hobby provider pack (providers/<id>/provider.json)",
+  "type": "object",
+  "required": ["id", "kind", "checkPrefix", "detect", "surfaces", "checks"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "name": { "type": "string" },
+    "kind": { "enum": ["core", "platform", "framework"], "description": "framework packs disable fallbackOnly surfaces of other packs" },
+    "version": { "type": "string", "description": "bump when checks change so incremental runs re-hunt" },
+    "checkPrefix": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*$" },
+    "detect": {
+      "type": "object",
+      "properties": {
+        "always": { "type": "boolean" },
+        "files": { "type": "array", "items": { "type": "string" }, "description": "globs; any match detects the pack" },
+        "globs": { "type": "array", "items": { "type": "string" } },
+        "deps": { "type": "array", "items": { "type": "string" }, "description": "package.json dependency names" },
+        "unlessDeps": { "type": "array", "items": { "type": "string" }, "description": "skip detection if any of these deps exist" }
+      }
+    },
+    "surfaces": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["files"],
+        "properties": {
+          "files": { "type": "array", "items": { "type": "string" } },
+          "exclude": { "type": "array", "items": { "type": "string" } },
+          "contains": { "type": "string", "description": "regex the file content must match" },
+          "priority": { "enum": ["high", "low"] },
+          "fallbackOnly": { "type": "boolean" }
+        }
+      }
+    },
+    "checks": { "type": "string" },
+    "prescan": { "type": "string" },
+    "analyzers": { "type": "array", "items": { "type": "string" } },
+    "live": {
+      "type": "object",
+      "required": ["mcp", "checks"],
+      "properties": { "mcp": { "type": "string", "description": "key in trusted-mcp.json servers" }, "checks": { "type": "string" } }
+    }
+  }
+}

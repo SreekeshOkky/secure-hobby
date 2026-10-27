@@ -1,0 +1,20 @@
+{
+  "id": "vercel",
+  "name": "Vercel",
+  "kind": "platform",
+  "version": "1",
+  "checkPrefix": "VERCEL",
+  "detect": {
+    "files": ["vercel.json", ".vercel/project.json"],
+    "deps": ["@vercel/analytics", "@vercel/speed-insights", "@vercel/blob", "@vercel/kv", "@vercel/postgres", "@vercel/edge-config", "@sveltejs/adapter-vercel", "next"]
+  },
+  "surfaces": {
+    "config": { "files": ["vercel.json"], "priority": "high" },
+    "cron": { "files": ["{app,src/app}/api/cron/**/route.{ts,js}", "{pages,src/pages}/api/cron/**/*.{ts,js}", "api/cron/**/*.{ts,js}", "src/routes/api/cron/**/+server.{ts,js}"], "priority": "high" },
+    "functions": { "files": ["api/**/*.{ts,js,mjs}"], "exclude": ["api/cron/**"], "priority": "high" }
+  },
+  "checks": "checks.md",
+  "prescan": "prescan.json",
+  "analyzers": ["analyzers.mjs"],
+  "live": { "mcp": "vercel", "checks": "live.md" }
+}

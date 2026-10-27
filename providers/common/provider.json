@@ -1,0 +1,19 @@
+{
+  "id": "common",
+  "name": "Common web app checks",
+  "kind": "core",
+  "version": "1",
+  "checkPrefix": "COMMON",
+  "detect": { "always": true },
+  "surfaces": {
+    "ci": { "files": [".github/workflows/*.{yml,yaml}"], "priority": "high" },
+    "source": {
+      "files": ["**/*.{ts,tsx,js,jsx,mjs,cjs,svelte,vue}"],
+      "exclude": ["**/*.{test,spec}.*", "**/*.d.ts", "**/__tests__/**", "**/*.config.*"],
+      "priority": "high",
+      "fallbackOnly": true
+    }
+  },
+  "checks": "checks.md",
+  "prescan": "prescan.json"
+}

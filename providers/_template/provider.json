@@ -1,0 +1,17 @@
+{
+  "id": "__ID__",
+  "name": "__ID__",
+  "kind": "__KIND__",
+  "version": "1",
+  "checkPrefix": "__PREFIX__",
+  "detect": {
+    "files": ["__ID__.json"],
+    "globs": [],
+    "deps": []
+  },
+  "surfaces": {
+    "config": { "files": ["__ID__.json"], "priority": "high" }
+  },
+  "checks": "checks.md",
+  "prescan": "prescan.json"
+}

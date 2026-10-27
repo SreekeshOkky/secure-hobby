@@ -1,0 +1,14 @@
+{
+  "name": "secure-hobby",
+  "description": "Read-only security audits for hobby and POC apps on free tiers.",
+  "owner": {
+    "name": "secure-hobby contributors"
+  },
+  "plugins": [
+    {
+      "name": "secure-hobby",
+      "source": "./",
+      "description": "Read-only security audit for hobby apps on Vercel + Supabase and friends."
+    }
+  ]
+}
