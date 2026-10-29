@@ -4,13 +4,12 @@
 // Patches are checked with `git apply --check` (read-only) but never applied.
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
-import { loadRun, readJSON, writeFile, ensureDir, die, isMain } from './lib.mjs';
+import { loadRun, readJSON, writeFile, ensureDir, die, isMain, git } from './lib.mjs';
 
 const ICON = { critical: '🔴', high: '🟠', medium: '🟡', low: '🔵', info: '⚪' };
 
 function checkPatch(target, patchFile) {
-  const r = spawnSync('git', ['-c', 'core.fsmonitor=false', 'apply', '--check', '-p1', patchFile], { cwd: target, encoding: 'utf8', timeout: 20000 });
+  const r = git(target, ['apply', '--check', '-p1', patchFile], { timeout: 20000 });
   return r.status === 0;
 }
 

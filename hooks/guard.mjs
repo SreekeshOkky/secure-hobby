@@ -136,16 +136,23 @@ async function main() {
   let raw = '';
   for await (const chunk of process.stdin) raw += chunk;
   let input;
-  try { input = JSON.parse(raw || '{}'); } catch { process.exit(0); }
+  try { input = JSON.parse(raw || '{}'); } catch { input = null; }
+  // Unparseable input: no session id to match, so deny if any audit is active.
+  if (!input) {
+    if (newestMarker()) write(deny('unreadable hook input during an audit; failing closed'));
+    process.exit(0);
+  }
   const ctx = loadContext(input);
   if (!ctx) process.exit(0);
   let res;
   try { res = decide(String(input.tool_name || ''), input.tool_input || {}, ctx); } catch (e) { res = deny(`guard error (${e.message}); failing closed`); }
   log(ctx, String(input.tool_name || ''), res);
-  if (res.decision) {
-    process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: res.decision, permissionDecisionReason: res.reason } }));
-  }
+  if (res.decision) write(res);
   process.exit(0);
+}
+
+function write(res) {
+  process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: res.decision, permissionDecisionReason: res.reason } }));
 }
 
 if (isMain(import.meta.url)) main();

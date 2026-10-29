@@ -15,7 +15,7 @@ The output lands in `~/.secure-hobby/<repo>/run-N/REPORT.md`, with ready-to-revi
 ## Install
 
 ```bash
-claude plugin marketplace add <owner>/secure-hobby
+claude plugin marketplace add SreekeshOkky/secure-hobby
 ```
 ```bash
 claude plugin install secure-hobby@secure-hobby
@@ -43,7 +43,7 @@ The audit ran headlessly (`claude -p`) against [`evals/fixtures/next-supabase-vu
 | default | Opus 5.5 | 1 haiku recon, 1 sonnet hunter, 3 sonnet verifiers | 79–92% | 90–96% | 21–23 (6–7 critical) | ~0.93M / 31k | $0.77–0.80 | 4.7 min |
 | **default (v0.1.1)** | **Sonnet 5.5** | same | **88%** | **100%** | 21 (5 critical) | 0.84M / 33k | **$0.59** | 3.8 min |
 
-\*API list price as reported by Claude Code. On a Claude subscription, this comes out of your plan's usage instead.
+\*API list price as reported by Claude Code. On a Claude subscription, this comes out of your plan's usage instead. Model time is API time summed across the orchestrator and all subagents, not wall-clock time; parallel agents finish sooner.
 
 What this shows:
 - **Under $0.60 per full audit** of a small app on a sonnet session (`claude --model sonnet`). An Opus session costs about 30% more for the same detection, because the orchestrator only dispatches work.
@@ -56,7 +56,7 @@ What this shows:
   - the orchestrator scheduling a wake-up that re-ran the whole audit (now blocked by the guard)
   - hardening notes being dropped on incremental runs
 
-Caveats: this is one small synthetic fixture, not a benchmark of real-world apps. Default-mode recall ranged from 79% to 92% across five runs on the same input, so expect variance. Per-run details, misses and scoring notes are in [`evals/RESULTS.md`](evals/RESULTS.md). To reproduce:
+Caveats: this is one small synthetic fixture, not a benchmark of real-world apps. Default-mode recall ranged from 79% to 92% across five runs on the same input (Opus and Sonnet sessions, plugin 0.1.0 and 0.1.1), so expect variance. Per-run details, misses and scoring notes are in [`evals/RESULTS.md`](evals/RESULTS.md). To reproduce:
 ```bash
 claude --model sonnet -p --plugin-dir . --allowedTools "Bash(node *)" Read Write Agent Grep Glob "/secure-hobby:audit $PWD/evals/fixtures/next-supabase-vuln --offline"
 ```

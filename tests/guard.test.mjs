@@ -93,6 +93,14 @@ test('our subagents are guarded even without a session marker', () => {
   assert.ok(ask);
 });
 
+test('unreadable input fails closed only while an audit is active', () => {
+  const { home } = setup();
+  const out = node(home, 'hooks/guard.mjs', [], '{not json').stdout;
+  assert.equal(JSON.parse(out).hookSpecificOutput.permissionDecision, 'deny');
+  node(home, 'scripts/run.mjs', ['end', 'sess1']);
+  assert.equal(node(home, 'hooks/guard.mjs', [], '{not json').stdout, '');
+});
+
 test('denials are logged to guard.log', () => {
   const { runDir, ask } = setup();
   ask('Bash', { command: 'npm install' });
