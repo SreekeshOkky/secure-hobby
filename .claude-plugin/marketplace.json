@@ -2,7 +2,8 @@
   "name": "secure-hobby",
   "description": "Read-only security audits for hobby and POC apps on free tiers.",
   "owner": {
-    "name": "secure-hobby contributors"
+    "name": "Sreekesh OS",
+    "url": "https://github.com/SreekeshOkky"
   },
   "plugins": [
     {

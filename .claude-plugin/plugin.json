@@ -1,8 +1,11 @@
 {
   "name": "secure-hobby",
-  "version": "0.1.1",
+  "displayName": "Secure Hobby",
+  "version": "0.1.2",
   "description": "Read-only, cost-aware security audit for hobby and POC apps on free tiers (Vercel, Supabase, Next.js, Vite, SvelteKit; extensible provider packs).",
-  "author": { "name": "secure-hobby contributors" },
+  "author": { "name": "Sreekesh OS", "url": "https://github.com/SreekeshOkky" },
+  "homepage": "https://github.com/SreekeshOkky/secure-hobby#readme",
+  "repository": "https://github.com/SreekeshOkky/secure-hobby",
   "license": "MIT",
   "keywords": ["security", "audit", "supabase", "vercel", "rls", "nextjs", "sveltekit", "vite"]
 }
